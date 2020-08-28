@@ -31,7 +31,6 @@ export default new Vuex.Store({
             visits: null,
             typeId: null
 
-
         },
 
         publishedList: [],
@@ -144,14 +143,16 @@ export default new Vuex.Store({
 
         getArticle(state) {
 
-            state.article = storage.get('article');
+            state.article = storage.get("article");
             return state.article;
 
         },
 
         getUserInfo(state) {
+
             state.userInfo = storage.get("userInfo");
             return state.userInfo;
+
         },
 
         getPublishedList(state) {

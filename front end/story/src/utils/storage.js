@@ -16,6 +16,10 @@ const storage = {
 
         window.sessionStorage.removeItem(key)
 
+    },
+
+    clear() {
+        window.sessionStorage.clear();
     }
 
 }

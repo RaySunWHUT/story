@@ -86,8 +86,6 @@ export default {
           if (res.code == 200) {
           
               _this.$message.success("删除成功!");
-              
-              storage.remove("publishedList");
               _this.reload();
           
           } else {
@@ -104,91 +102,38 @@ export default {
       
   },
 
-    update() {
-      
-      var _this = this;
 
-      var _this = this;
-
-      this.$router.push({
-          path: '/user/createIdea',
-          query: {
-            ideaId: _this.record.ideaId,
-            action: "update"
-          }
-      })
-
-      // http({
-
-      // // 假设后台需要的是表单数据这里你就可以更改
-      // headers: {
-
-      // "Content-Type": "application/json;charset=UTF-8"
-      
-      // },
-
-      // method: 'post',
-      // url: 'http://localhost:8080/idea/ideaPost',
-
-      // data: {
-
-      //   ideaId: _this.draft.ideaId,
-      //   status: "update"
-
-      // },
-
-      // responseType: 'json'
-
-      // }).then(function (res) {
-
-      //     console.log(res);
-
-      //     var code = res.code;
-      //     var info = res.info;
-
-      //     if (res.code == 200) {
-          
-      //         _this.$message.success("发布成功!");
-      //         _this.$router.push('/ideaInfo');
-          
-      //     } else {
-              
-      //         _this.$message.error(info);
-
-      //     }
-
-      // }).catch(function (err) {
-
-      //     _this.$message.error("系统错误！");
-
-      // });
+  update() {
     
-    },
+    var _this = this;
 
-    edit() {
+    var _this = this;
 
-      var _this = this;
+    this.$router.push({
+        path: '/user/createIdea',
+        query: {
+          ideaId: _this.record.ideaId,
+          action: "update"
+        }
+    })
+  
+  },
 
-      // this.$router.push({
-      //   path: "'/ideaInfo",
-      //   query: {
 
-      //     title: _this.record.title,
-      //     content: _this.record.content,
-      //     likes: _this.record.likes,
-      //     visits: _this.record.visists
+  edit() {
 
-      //   }
-      // })
+    var _this = this;
 
-      this.$router.push({
-          path: '/ideaInfo',
-          query: {
-            ideaId: _this.record.ideaId,
-          }
-      })
+    this.$router.push({
 
-    }
+        path: '/ideaInfo',
+        query: {
+          ideaId: _this.record.ideaId,
+        }
+    
+    })
+
+  }
 
   },
 

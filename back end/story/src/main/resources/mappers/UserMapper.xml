@@ -40,8 +40,8 @@
         select typeId, typeName from type;
     </select>
 
-    <select id="getUserAccountByUserId" parameterType="Integer" resultType="String">
-        select userName from user where userId = #{userId};
+    <select id="getUserByUserId" parameterType="Integer" resultType="com.story.domain.User">
+        select * from user where userId = #{userId};
     </select>
 
 </mapper>

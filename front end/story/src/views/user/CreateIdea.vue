@@ -9,16 +9,15 @@
             ref="md" 
             @change="change" 
             style="min-height: 600px"
-        />
+        ></mavon-editor>
 
         <div class="btn">
             <el-button type="primary" @click="submit()">提交</el-button>
             <el-button type="danger" @click="save()">保存</el-button>
         </div>
-        <!-- <Footer></Footer> -->
         
     <router-view class="router-view"></router-view>
-
+    <Footer></Footer>
     </div>
     
 </template>
@@ -48,16 +47,19 @@ export default {
     data () {
 
         return {
-            ideaId: '',
+
+            ideaId: null,
             title: '',
             content: '', // 输入的markdown
             html: '',    // 及时转的html
             visibility: null,
             likes: 0,
             visits: 0,
-            typeId: 4
+            typeId: null,
+            action: null
 
         }
+
     },
 
     created() {
@@ -65,9 +67,12 @@ export default {
         var _this = this;
 
         var ideaId = this.$route.query.ideaId;
-
         var action = this.$route.query.action;
 
+        this.action = action;
+        this.ideaId = ideaId;
+
+        // 若为草稿发布
         if (ideaId != null && action == "post") {
 
             var draftList = JSON.parse(this.$store.getters.getDraftList);
@@ -83,7 +88,8 @@ export default {
                 }
 
             }
-
+        
+        // 若为idea更新
         } else if (ideaId != null && action == "update") {
 
             var publishedList = JSON.parse(this.$store.getters.getPublishedList);
@@ -112,7 +118,16 @@ export default {
 
             }
 
+        // 非修改和草稿发布, 而是直接进行创作！
+        } else if (_this.action == null && _this.ideaId == null) {
 
+            if (storage.get("title") != null) {
+                _this.title = storage.get("title");
+            }
+            
+            if (storage.get("content") != null) {
+                _this.content = storage.get("content");
+            }
 
         }
     
@@ -132,15 +147,6 @@ export default {
         submit () {  // 提交
 
             var _this = this;
-            
-            console.log("-------------- content --------------")
-            // 获取左侧
-            console.log(this.content);
-
-
-            console.log("-------------- html --------------")
-            // 获取右侧
-            console.log(this.html);
 
             this.visibility = 1;
 
@@ -152,9 +158,10 @@ export default {
 
                 this.$message.warning("想法内容不能为空!");
             
-            } else {    // 提交
+            } else {    // 提交(直接创作, 则为ideaId = null, action = null)
 
                 var obj = new Object();
+
                 obj.ideaId = _this.ideaId;
                 obj.title = _this.title;
                 obj.content = _this.content;
@@ -169,6 +176,8 @@ export default {
                 _this.$router.push('/user/createIdea/public');
 
             }
+
+
 
         },
 
@@ -186,10 +195,23 @@ export default {
             obj.likes = _this.likes;
             obj.visits = _this.visits;
             obj.visibility = _this.visibility;
-            obj.typeId = _this.typeId;
+
+                        
+            console.log(obj);
+            
+            if (this.ideaId == null) {  // 若从零开始创作, 并保存为草稿, 默认类型为"随笔"
+
+                obj.typeId = 4;
+ 
+            } else {    // 其余情况保存为原类型
+
+               obj.typeId =  _this.typeId;
+            
+            }
+
 
             storage.set("article", JSON.stringify(obj));
-            _this.$store.commit('saveArticle', storage.get('article'));
+            _this.$store.commit('saveArticle', storage.get("article"));
 
             var user = JSON.parse(_this.$store.getters.getUser);
             
@@ -203,11 +225,12 @@ export default {
             },
 
             method: 'post',
-            url: 'http://localhost:8080/idea/saveIdea',
+            url: 'http://localhost:8080/idea/storeIdea',
 
             data: {
               
                 ideaId: _this.ideaId,
+                userAccount: user.userAccount,
                 title: _this.title,
                 content: _this.content,
                 typeId: 4,
@@ -226,10 +249,6 @@ export default {
                 var code = res.code;
                 var info = res.info;
 
-                // storage.remove("artile");
-
-                // storage.remove("typeId");
-
                 if (res.code == 200) {
                 
                     _this.$message.success("提交成功！");
@@ -243,18 +262,45 @@ export default {
 
             }).catch(function (err) {
 
-              _this.$message.error("系统错误！");
+              _this.$message.error("CreateIdea.vue: 系统错误！");
         
         });
 
+
+        },
+
+        listen(property, value) {
+
+            if (property == "title") {
+
+                this.title = value;
+                storage.set("title", this.title);
+
+            } else if (property == "content") {
+                
+                this.content = value;
+                storage.set("content", this.content);
+            
+            }
 
         }
 
     },
 
-    mounted() {
+    watch: {
+        
+        title(newVal, oldVal) {
 
+            this.listen("title", newVal);
+        
+        },
+        content(newVal, oldVal) {
+        
+            this.listen("content", newVal);
+        
+        }
     }
+
 }
 </script>
 

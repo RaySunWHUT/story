@@ -34,8 +34,7 @@ export default {
       var comment = {
         author: "我没有名字",
         comment: this.textarea,
-        avatar:
-          "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1598440846929&di=d807df3b61bb0fe67495e10d74d27c31&imgtype=0&src=http%3A%2F%2Fgss0.baidu.com%2F-fo3dSag_xI4khGko9WTAnF6hhy%2Fzhidao%2Fpic%2Fitem%2Ff11f3a292df5e0feaf1add265d6034a85edf7292.jpg",
+        avatar: "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1598440846929&di=d807df3b61bb0fe67495e10d74d27c31&imgtype=0&src=http%3A%2F%2Fgss0.baidu.com%2F-fo3dSag_xI4khGko9WTAnF6hhy%2Fzhidao%2Fpic%2Fitem%2Ff11f3a292df5e0feaf1add265d6034a85edf7292.jpg",
         father: "可爱小豆"
       };
       this.$store.commit("addComment",comment);

@@ -36,7 +36,7 @@ public class IdeaServiceImpl implements IdeaService {
         //获取userId
         String userAccount = message.getString("userAccount");
         User user = userDao.getUserByUserAccount(userAccount);
-        message.put("userId",user.getUserId());
+        message.put("userId", user.getUserId());
 
         if (!message.containsKey("typeId")) {
 
@@ -221,11 +221,11 @@ public class IdeaServiceImpl implements IdeaService {
 
         Integer userId = Integer.parseInt(idea.getString("userId"));
 
-        String userAccount = userDao.getUserAccountByUserId(userId);
+        User user = userDao.getUserByUserId(userId);
 
         idea.remove("userId");
 
-        idea.put("userAccount", userAccount);
+        idea.put("userAccount", user.getUserName());
 
         idea.put("markdownString", markdownStyle(idea));
 
@@ -235,18 +235,76 @@ public class IdeaServiceImpl implements IdeaService {
 
 
     @Override
-    public JSONObject updateIdeaVisibility(JSONObject message) {
+    public JSONObject ideaPost(JSONObject message) {
+
+        Integer affectRows;
 
         if (message.getString("status").equals("post")) {
+
             message.put("visibility", 1);
-            Integer affectRows = ideaDao.updateIdeaVisibility(message);
+            affectRows = ideaDao.updateIdeaVisibility(message);
+
+        } else if (message.getString("status").equals("update")) {
+
+            affectRows = ideaDao.updateIdea(message);
+
+        } else {    // status: zero
+
+            String userAccount = message.getString("userAccount");
+            User user = userDao.getUserByUserAccount(userAccount);
+
+            message.remove("userAccount");
+            message.put("userId", user.getUserId());
+
+            affectRows = ideaDao.saveIdea(message);
+
+        }
+
+        if (affectRows == 1) {
+
             return JSONUtil.successJSON(Constants.UPDATE_SUCCESS);
 
         } else {
 
-            ideaDao.updateIdea(message);
+            return JSONUtil.errorJSON(Constants.QUERY_FAILED);
 
-            return JSONUtil.successJSON(Constants.UPDATE_SUCCESS);
+        }
+
+    }
+
+
+    @Override
+    public JSONObject storeIdea(JSONObject message) {
+
+        System.out.println(message);
+
+        Integer result;
+
+        // 存在ideaId
+        if (message.containsKey("ideaId")) {
+
+            result = ideaDao.updateIdea(message);
+
+        } else {    // 不存在则保存为草稿
+
+            String userAccount = message.getString("userAccount");
+            User user = userDao.getUserByUserAccount(userAccount);
+
+            message.remove("userAccount");
+            message.put("userId", user.getUserId());
+
+            result = ideaDao.saveIdea(message);
+
+        }
+
+        // 操作成功
+        if (result == 1) {
+
+            return JSONUtil.successJSON();
+
+        } else {
+
+            return JSONUtil.errorJSON(Constants.QUERY_FAILED);
 
         }
 

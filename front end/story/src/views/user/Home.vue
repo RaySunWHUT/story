@@ -16,7 +16,7 @@
         <div class="row">
           <!-- 渲染列表，包括用户头像，标题名，内容  只获取热度前六个-->
           <div class="col-sm-4" v-for="(book, index) in books" :key="index">
-            <div class="single-blog" v-if="index<6" @click="book.views++">
+            <div class="single-blog" v-if="index < 6" @click="book.views++">
               <!-- 用户头像 -->
               <router-link :to="{path: '/ideaInfo', query: {ideaId: book.ideaId}}">
                 <img v-bind:src="book.userImg" alt />
@@ -206,8 +206,8 @@
         </div>
         <div class="row">
           <!-- 渲染列表，包括用户头像，标题名，内容  只获取热度前六个-->
-          <div class="col-sm-4" v-for="(note,index) in notes" :key="index">
-            <div class="single-blog" v-if="index<6" @click="note.views++">
+          <div class="col-sm-4" v-for="(note, index) in notes" :key="index">
+            <div class="single-blog" v-if="index < 6" @click="note.views++">
               <!-- 用户头像 -->
               <router-link :to="{path: '/ideaInfo', query: {item: note.ideaId}}">
               <img v-bind:src="note.userImg" alt />
@@ -297,8 +297,10 @@ export default {
     this.getnote();
   },
   methods: {
+
     getbook() {
-      this.instance
+    
+    this.instance
         .get("/book.json")
         .then(res => {
           this.books = res.data;
@@ -309,6 +311,7 @@ export default {
         });
     },
     getmusic() {
+
       this.instance
         .get("/music.json")
         .then(res => {
@@ -318,8 +321,10 @@ export default {
         .catch(err => {
           console.log(err);
         });
+
     },
     getvideo() {
+
       this.instance
         .get("/video.json")
         .then(res => {
@@ -329,8 +334,10 @@ export default {
         .catch(err => {
           console.log(err);
         });
+
     },
     getnote() {
+
       this.instance
         .get("/note.json")
         .then(res => {
@@ -340,8 +347,11 @@ export default {
         .catch(err => {
           console.log(err);
         });
+
     }
+
   }
+  
 };
 </script>
 <style lang="less" scoped>

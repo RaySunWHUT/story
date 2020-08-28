@@ -178,14 +178,13 @@ export default {
                 } else {
 
                     console.log(info);
-                    
                     _this.$message.error(info);
 
                 }
 
             }).catch(function (err) {
 
-                _this.$message.error("系统错误!");
+                _this.$message.error("Navigation.vue: 系统错误!");
             
         });
       
@@ -233,12 +232,15 @@ export default {
 
         if (code == 200) {
 
-          storage.remove('user');
+          storage.clear();
           
           _this.$router.replace('/');
-          _this.reload();  // 刷新界面
-          _this.$message.success('退出成功');
           
+          _this.$message.success('退出成功!');
+          
+          _this.reload();  // 刷新界面
+
+
         } else if (code == 400) {
           
           _this.$message.error('遭遇异常！')

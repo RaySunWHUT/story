@@ -1,5 +1,6 @@
 package com.story.service;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.story.domain.Idea;
 
@@ -16,5 +17,6 @@ public interface IdeaService {
     JSONObject listAllIdeasVisible(JSONObject message); //可见的
     JSONObject listAllIdeasInvisible(JSONObject message);//不可见的
     JSONObject listOneIdea(JSONObject message);         //查一个idea
-    JSONObject updateIdeaVisibility(JSONObject message);   //更新可见性
+    JSONObject ideaPost(JSONObject message);   //更新可见性
+    JSONObject storeIdea(JSONObject message);
 }

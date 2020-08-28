@@ -78,7 +78,7 @@ public class IdeaController {
     @RequestMapping(value = {"/ideaPost"}, method = RequestMethod.POST)
     public JSONObject ideaPost(@RequestBody JSONObject message) {
 
-        return ideaService.updateIdeaVisibility(message);
+        return ideaService.ideaPost(message);
 
     }
 
@@ -95,4 +95,14 @@ public class IdeaController {
         return ideaService.listAllIdeasInvisible(message);
 
     }
+
+
+    @RequestMapping(value = {"/storeIdea"}, method = RequestMethod.POST)
+    public JSONObject storeIdea(@RequestBody JSONObject message) {
+
+        return ideaService.storeIdea(message);
+
+    }
+
+
 }

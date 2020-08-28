@@ -56,12 +56,11 @@ export default {
   
   created() {
 
-    // this.ideaInfo.title = this.$route.query.title;
-    // this.ideaInfo.content = this.$route.query.content;
-
     var ideaId = this.$route.query.ideaId;
 
     var _this = this;
+
+    console.log(ideaId);
 
     http({
 

@@ -1,45 +1,29 @@
 <template>
   <div class="public">
+
     <div class="form">
-      <el-form ref="form" :model="form" label-width="80px">
-        <el-form-item>
-          <span class="do">发布想法</span>
-        </el-form-item>
-        <el-form-item label="想法类型">
-          <el-select v-model="form.region" placeholder="请选择想法类型" @change="select"> 
-            <!-- <el-option label="书评" value="book"></el-option>
-            <el-option label="乐评" value="music"></el-option>
-            <el-option label="影评" value="video"></el-option>
-            <el-option label="随笔" value="note"></el-option> -->
-            <el-option 
-              v-for="(item, index) in typeList" 
-              :key="parseInt(index)"
-              :label="item.typeName"
-              :value="parseInt(item.typeId)"
-            >
-            </el-option>
-          </el-select>
-        </el-form-item>
-        <!-- <el-form-item label="活动性质">
-    <el-checkbox-group v-model="form.type">
-      <el-checkbox label="美食/餐厅线上活动" name="type"></el-checkbox>
-      <el-checkbox label="地推活动" name="type"></el-checkbox>
-      <el-checkbox label="线下主题活动" name="type"></el-checkbox>
-      <el-checkbox label="单纯品牌曝光" name="type"></el-checkbox>
-    </el-checkbox-group>
-  </el-form-item>
-  <el-form-item label="特殊资源">
-    <el-radio-group v-model="form.resource">
-      <el-radio label="线上品牌商赞助"></el-radio>
-      <el-radio label="线下场地免费"></el-radio>
-    </el-radio-group>
-        </el-form-item>-->
-        <el-form-item>
-          <el-button type="primary" @click.native="publish()">发布</el-button>
-          <el-button @click.native="cancel()">取消</el-button>
-        </el-form-item>
-      </el-form>
-    </div>
+      <div class="do">
+        <span>发布想法</span>
+      </div>
+
+      <div class="select">
+        想法列表:
+        <el-select v-model="selectedType" placeholder="请选择想法类型">
+          <el-option
+            v-for="item in typeList"
+            :key="item.typeId"
+            :label="item.typeName"
+            :value="item.typeId">
+          </el-option>
+        </el-select>
+      </div>
+
+      <div class="btn">
+        <el-button type="primary" @click.native="publish()">发布</el-button>
+        <el-button @click.native="cancel()">取消</el-button>
+      </div>
+    </div> 
+
   </div>
 </template>
 
@@ -53,18 +37,9 @@ export default {
   data() {
     
     return {
-      form: {
-        name: "",
-        region: "",
-        date1: "",
-        date2: "",
-        delivery: false,
-        type: [],
-        resource: "",
-        desc: ""
-      },
+
       typeList: [],
-      selectedType: [],
+      selectedType: null,
       status: null
 
     };
@@ -72,47 +47,71 @@ export default {
 
   created() {
 
-    console.log(this.$store.getters.getTypeList)
-
     this.typeList = JSON.parse(this.$store.getters.getTypeList);
 
-    // this.typeList.push({
-    //   typeId: 1,
-    //   typeName: '音乐'
-    // })
+    var typeId = JSON.parse(this.$store.getters.getArticle).typeId;
+
+    if (typeId != null) {
+
+      this.selectedType = this.getTypeNameByTypeId(typeId);
+
+    }
 
   },
 
   methods: {
+    
+    getTypeIdByTypeName(typeName) {
 
-    select(item) {
+      for (var i = 0; i < this.typeList.length; i++) {
 
-      storage.set("typeId", item);
-      this.$store.commit('keepArticleType', storage.get('typeId'));
+        if (typeName == this.typeList[i].typeName) {
+
+            return this.typeList[i].typeId;
+
+        }
+
+      }
 
     },
 
-    publish() {
+    getTypeNameByTypeId(typeId) {
+
+      for (var i = 0; i < this.typeList.length; i++) {
+
+        if (typeId == this.typeList[i].typeId) {
+
+            return this.typeList[i].typeName;
+
+        }
+
+      }
+
+    },
+
+    publish() { // 发布分为三种: 1. 已投递更新; 2. 草稿发布; 3. 从零开始创作
 
       var _this = this;
 
       var user = JSON.parse(_this.$store.getters.getUser);
       var article = JSON.parse(_this.$store.getters.getArticle);
 
-      console.log("article:" + article);
-
-      console.table(article);
-
       if (article.visibility == 1) {  // 修改
 
         this.status = "update";
 
       } else {
-
         
         this.status = "post";
 
       }
+
+      // 若为从零开始创作
+      if (article.ideaId == null) {
+
+        this.status = "zero";
+
+      } 
 
       http({
 
@@ -128,11 +127,11 @@ export default {
 
             data: {
 
+                userAccount: user.userAccount,
                 ideaId: article.ideaId,
-                typeId: article.typeId,
+                typeId: _this.selectedType,
                 title: article.title,
                 content: article.content,
-                typeId: article.typeId,
                 visibility: article.visibility,
                 likes: article.likes,
                 visits: article.visits,
@@ -143,15 +142,15 @@ export default {
             responseType: 'json'
 
             }).then(function (res) {
+              
+              console.log(res);
 
-                console.log(res);
+              console.table(article);
 
                 var code = res.code;
                 var info = res.info;
 
-                storage.remove("artile");
-
-                storage.remove("typeId");
+                storage.remove("article");
 
                 if (res.code == 200) {
                 
@@ -166,7 +165,7 @@ export default {
 
             }).catch(function (err) {
 
-              _this.$message.error("系统错误！");
+              _this.$message.error("Public.vue: 系统错误！");
         
         });
 
@@ -184,15 +183,38 @@ export default {
 </script>
 
 <style lang="less" scoped>
+
+.btn {
+
+  position: relative;
+
+  left: 85px;
+  top: 200px;
+
+  float: left;
+
+}
+
+.do {
+  font-size: 28px;
+  font-weight: bold;
+  color: black;
+  position: relative;
+  top: 10px;
+  left: 10px;
+}
+
+.select {
+
+  position: relative;
+  top: 30px;
+  left: 10px;
+
+}
+
+
 .public {
-  // background: rgba(94, 91, 91, 0.8);
-  // position: fixed;
-  // z-index: 15;
-  // top: 0;
-  // left: 0;
-  // width: 100%;
-  // height: 100%;
-  opacity: 0.6;
+  opacity: 0.8;
   background-color: rgb(177, 175, 175);
 
   bottom: 0;
@@ -205,25 +227,14 @@ export default {
 }
 
 .form {
-  // position: relative;
-  // top: 20px;
-  // left: 20px;
   position: absolute;
   transform: translate(-50%, 50%);
   left: 50%;
   right: 50%;
-  width: 400px;
-  height: 400px;
+  width: 350px;
+  height: 350px;
   background-color: rgb(231, 231, 231);
   z-index: 13;
 }
 
-.do {
-  font-size: 25px;
-  font-weight: bold;
-  color: black;
-  position: relative;
-  top: 15px;
-  left: -65px;
-}
 </style>

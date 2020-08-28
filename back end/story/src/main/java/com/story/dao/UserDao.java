@@ -27,6 +27,6 @@ public interface UserDao {
 
     List<JSONObject> listTypes();
 
-    String getUserAccountByUserId(Integer userId);
+    User getUserByUserId(Integer userId);
 
 }

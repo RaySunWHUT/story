@@ -17,151 +17,222 @@
                   <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                 </el-upload>
               </div>
-              <span>昵称：</span>
-              <input
-                type="text"
-                v-model="userName"
-                :readonly="edit_state"
-                :style="{border:borderState+'px solid'}"
-              />
+              <div class="uName">
+                <span>昵称：</span>
+                <el-input
+                  type="text"
+                  v-model="userName"
+                  :disabled="state"
+                  style="width: 300px;"
+                ></el-input>
+              </div>
               <div class="checkbox">
                 <span>性别：</span>
-                男：
-                <input
-                  type="radio"
-                  name="radios"
-                  value="男"
-                  v-model="gender"
-                  :disabled="choseState"
-                />
-                女：
-                <input
-                  type="radio"
-                  name="radios"
-                  value="女"
-                  v-model="gender"
-                  :disabled="choseState"
-                />
+                  <el-radio
+                    label="男"
+                    v-model="gender"
+                    :disabled="state"
+                  ></el-radio>
+                  <el-radio
+                    label="女"
+                    v-model="gender"
+                    :disabled="state"
+                  ></el-radio>
               </div>
               <div class="mail">
                 <span>邮箱：</span>
-                <input
+                <el-input
                   type="email"
                   v-model="email"
-                  :readonly="edit_state"
-                  :style="{border:borderState+'px solid'}"
-                />
+                  :disabled="state"
+                  style="width: 300px;"
+                ></el-input>
               </div>
               <div class="personalSignature">
                 <span>个性签名：</span>
-                <textarea v-model="sign" cols="50" rows="8" :readonly="edit_state"></textarea>
+                <el-input 
+                  class="texta"
+                  type="textarea" 
+                  v-model="sign" 
+                  cols="50" 
+                  rows="8" 
+                  :disabled="state"
+                  style="width: 300px; height: 200px;"  
+                ></el-input>
               </div>
-              <button class="btn btn-lg btn-login" @click="edit_state?edit():save()">{{message}}</button>
+              <button class="btn btn-lg btn-login" @click="save()">{{message}}</button>
             </div>
           </div>
         </div>
       </div>
-    <!-- <Footer></Footer> -->
   </div>
 </template>
 
 <script>
 import Footer from "@/components/Footer.vue";
 import http from '@/utils/http';
+import storage from '@/utils/storage';
 export default {
+
   name: "PersonalInfo",
+  
+  inject: ['reload'],
+
   components: {
     Footer
   },
-  data() {
-    return {    
-      message: "修 改",
-      userName:"云飞er",
-      gender: "男",
-      email:"913283849@qq.com",
-      sign: "追求自由!",
-      edit_state: true,
-      choseState: true,
-      borderState: "0",
-      imageUrl: ""
-    };
+
+  created() {
+  
+    var userInfo = JSON.parse(storage.get('userInfo'));
+
+    console.table(userInfo);
+
+    this.userName = userInfo.userName;
+    this.email = userInfo.email;
+    this.sign = userInfo.sign;
+    this.gender = userInfo.gender;
+
+
   },
+
+  data() {
+
+    return {    
+
+      message: "修改",
+      userName:"",
+      gender: "",
+      email:"",
+      sign: "",
+      imageUrl: "",
+      state: true,
+      avatar: ""
+
+    };
+
+  },
+
   methods: {
-    edit: function() {
-      this.choseState = this.edit_state = false;
-      this.borderState = "1";
-      this.message = "保 存";
-    },
+
     save: function() {
-      //保存信息到数据库
-      this.choseState = this.edit_state = true;
-      this.borderState = "0";
-      this.message = "修 改";
+
       var _this = this;
-       http({
 
-            // 假设后台需要的是表单数据这里你就可以更改
-            headers: {
+      if (this.message == "修改") {
 
-            "Content-Type": "application/json;charset=UTF-8"
-            
-            },
-
-            method: 'post',
-            url: 'http://localhost:8080/user/updateUser',
-
-            data: {
-                userName: _this.userName,
-                avatar: "",
-                userAccount: JSON.parse(_this.$store.getters.getUser).userAccount,
-                gender: _this.gender,
-                email: _this.email,
-                sign: _this.sign
-            },
+        this.state = false;
+        this.message = "保存";
       
-            responseType: 'json'
+      } else {
 
-            }).then(function (res) {
-                console.log(res);
+        this.message = "修改";      
+        this.state = true;
+        
+        this.avatar = "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1598440846929&di=d807df3b61bb0fe67495e10d74d27c31&imgtype=0&src=http%3A%2F%2Fgss0.baidu.com%2F-fo3dSag_xI4khGko9WTAnF6hhy%2Fzhidao%2Fpic%2Fitem%2Ff11f3a292df5e0feaf1add265d6034a85edf7292.jpg";
 
-                var code = res.code;
-                var info = res.info;
+        http({
 
-                if (res.code == 200) {
-                
+              // 假设后台需要的是表单数据这里你就可以更改
+              headers: {
+
+              "Content-Type": "application/json;charset=UTF-8"
+              
+              },
+
+              method: 'post',
+              url: 'http://localhost:8080/user/updateUser',
+
+              data: {
+
+                  userAccount: JSON.parse(_this.$store.getters.getUser).userAccount,
+                  userName: _this.userName,
+                  avatar: _this.avatar,
+                  gender: _this.gender,
+                  email: _this.email,
+                  sign: _this.sign
+
+              },
+        
+              responseType: 'json'
+
+              }).then(function (res) {
+
+                  var code = res.code;
+                  var info = res.info;
+
+                  if (res.code == 200) {
+
+                    var userStorageInfo = JSON.parse(storage.get('userInfo'));
+
+                    var userInfo = new Object();
+                    
+                    userInfo.userId = userStorageInfo.userId;
+                    userInfo.roleName = userStorageInfo.roleName;
+                    userInfo.userAccount = userStorageInfo.userAccount;
+
+                    userInfo.userName = _this.userName;
+                    userInfo.sign = _this.sign;
+                    userInfo.avatar = _this.avatar;
+                    userInfo.email = _this.email;
+                    userInfo.gender = _this.gender;
+
+                    // 覆盖旧的userInfo
+                    storage.set("userInfo", JSON.stringify(userInfo));
+                    // 刷新！
+                    _this.reload();
+
                     _this.$message.success("修改成功！");
-                    _this.$router.push("/user/createCenter/personCenter");
-                
-                } else {
-                     _this.$message.success("修改失败！");
-                    _this.$message.error(info);
+                  
+                  } else {
 
-                }
+                      _this.$message.success("修改失败！");
+                      _this.$message.error(info);
+                      
+                  }
 
-            }).catch(function (err) {
+              }).catch(function (err) {
 
-                console.log(err);
-            
+                  console.log("PersonCenter.vue: save() 错误！");
+              
         });
+
+      }
+
     },
+    
     handleAvatarSuccess(res, file) {
+    
       this.imageUrl = URL.createObjectURL(file.raw);
+    
     },
+    
     beforeAvatarUpload(file) {
+      
       const isJPG = file.type === "image/jpeg";
       const isLt2M = file.size / 1024 / 1024 < 2;
 
       if (!isJPG) {
+
         this.$message.error("上传头像图片只能是 JPG 格式!");
+
       }
+
       if (!isLt2M) {
+
         this.$message.error("上传头像图片大小不能超过 2MB!");
+
       }
+
       return isJPG && isLt2M;
+    
     }
+  
   }
+
 };
 </script>
+
 <style scoped>
 .form-wrapper {
   padding-bottom: 70px;
@@ -190,9 +261,9 @@ export default {
 }
 .form-signin span {
   font-size: 20px;
-  margin-left: 50px;
+  margin-left: 35px;
 }
-.form-signin input[type="text"] {
+/* .form-signin input[type="text"] {
   margin-left: 20px;
   margin-bottom: 15px;
   border-radius: 3px;
@@ -201,7 +272,7 @@ export default {
   border: 2px solid #eaeaea;
   box-shadow: none;
   font-size: 20px;
-}
+} */
 .form-signin .checkbox {
   text-align: left;
   font-weight: normal;
@@ -278,4 +349,22 @@ export default {
   height: 78px;
   display: block;
 }
+
+
+.personalSignature span {
+
+  position: relative;
+  top: -160px;
+  left: -40px;
+  
+}
+
+.texta {
+
+  position: relative;
+  top: 20px;
+  left: -40px;
+
+}
+
 </style>

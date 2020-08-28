@@ -38,8 +38,7 @@ export default {
       pageCount: 7,
       currentPage: 1,
 
-      recordList: [
-      ]
+      recordList: []
     
     };
   
@@ -61,7 +60,7 @@ export default {
 
     var _this = this;
 
-    // if (storage.get("publishedList") == null) {
+    // if (!storage.get("publishedList")) {
 
       http({
 

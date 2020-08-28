@@ -1,6 +1,5 @@
 package com.story.serviceImpl;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.story.constants.Constants;
 import com.story.dao.UserDao;
@@ -15,12 +14,8 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.DigestUtils;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
-import javax.imageio.stream.FileImageOutputStream;
-import java.io.File;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -283,7 +278,7 @@ public class UserServiceImpl implements UserService {
     public JSONObject listOneUser(JSONObject jsonObject) {
         JSONObject listOneUser = userDao.listOneUser(jsonObject);
         if (listOneUser != null) {
-            return listOneUser;
+            return JSONUtil.successJSON(listOneUser);
         } else {
             return JSONUtil.errorJSON(Constants.QUERY_FAILED);
         }

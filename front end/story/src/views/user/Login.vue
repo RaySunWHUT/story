@@ -85,75 +85,137 @@ export default {
     },
 
     methods: {
-    login: function () {
 
-      var _this = this
+        getUserInfo() {
 
-      _this.message = 'login'
+            var _this = this;
 
-      this.axios({
+            var user = JSON.parse(this.$store.getters.getUser);
 
-        method: 'post',
+            http({
 
-        url: 'http://localhost:8080/login',
+                // 假设后台需要的是表单数据这里你就可以更改
+                headers: {
 
-        headers: {
+                "Content-Type": "application/json;charset=UTF-8"
+                
+                },
 
-          'Content-Type': 'application/json;charset=utf-8'
+                method: 'post',
+                url: 'http://localhost:8080/user/listOneUser',
+
+                data: {
+
+                    userAccount: user.userAccount,
+
+                },
+
+                responseType: 'json'
+
+                }).then(function (res) {
+
+                    var code = res.code;
+                    var info = res.info;
+
+                    if (res.code == 200) {
+
+                        // 创建userInfo
+                        var userInfo = new Object();
+                        userInfo.userId = info.userId;
+                        userInfo.userAccount = info.userAccount;
+                        userInfo.userName = info.userName;
+                        userInfo.sign = info.sign;
+                        userInfo.roleName = info.roleName;
+                        userInfo.avatar = info.avatar;
+                        userInfo.email = info.email;
+                        userInfo.gender = info.gender;
+
+                        // 提交userInfo
+                        storage.set('userInfo', JSON.stringify(userInfo));
+                        _this.$store.commit('setUserInfo', storage.get('userInfo'));
+                    
+                    } else {
+                        
+                        _this.$message.error(info);
+
+                    }
+
+                }).catch(function (err) {
+
+                    _this.$message.error("Login.vue —— getUserInfo:系统错误！");
+             
+            });
 
         },
+        login: function () {
 
-        data: {
+            var _this = this
 
-          userAccount: _this.userAccount,
-          password: _this.password
+            _this.message = 'login'
+
+            this.axios({
+
+                method: 'post',
+
+                url: 'http://localhost:8080/login',
+
+                headers: {
+
+                'Content-Type': 'application/json;charset=utf-8'
+
+                },
+
+                data: {
+
+                userAccount: _this.userAccount,
+                password: _this.password
+
+                },
+
+                responseType: 'json'
+
+            }).then(function (response) {
+                
+                var info = response.data.info;
+                var code = response.data.code;
+
+                if (code == 200) {
+
+                // 创建user对象
+                var user = new Object();
+                user.token = info;
+                user.userAccount = _this.userAccount;
+                user.password = _this.password;
+
+                // 提交user(含token)
+                storage.set('user', JSON.stringify(user));
+                _this.$store.commit('createUser', storage.get('user'));
+                
+                _this.getUserInfo();
+
+                _this.$router.replace('/');
+
+                _this.reload();
+
+                _this.$message.success('登录成功');
+
+                } else if (code == 400 && info == 'incorrect') {
+
+                _this.$message.error('用户名或密码输入错误！');
+
+                } else {
+
+                _this.$message.error('账号不存在！');
+
+                }
+
+            }).catch(function (error) {
+
+                _this.$message.error('Login.vue —— login: 系统错误！');
+
+            })
 
         },
-
-        responseType: 'json'
-
-      }).then(function (response) {
-        
-        var info = response.data.info;
-        var code = response.data.code;
-
-        if (code == 200) {
-
-          // 创建user对象
-          var user = new Object();
-          user.token = info;
-          user.userAccount = _this.userAccount;
-          user.password = _this.password;
-
-          // 提交user(含token)
-          storage.set('user', JSON.stringify(user));
-          _this.$store.commit('createUser', storage.get('user'));
-
-        //   console.log(JSON.parse(_this.$store.getters.getUser).userAccount);
-
-          _this.$router.replace('/');
-
-          _this.reload();
-
-          _this.$message.success('登录成功');
-
-        } else if (code == 400 && info == 'incorrect') {
-
-          _this.$message.error('用户名或密码输入错误！');
-
-        } else {
-
-          _this.$message.error('账号不存在！');
-
-        }
-
-      }).catch(function (error) {
-
-          _this.$message.error('系统错误！');
-
-      })
-
-    },
 
         register: function () {
 

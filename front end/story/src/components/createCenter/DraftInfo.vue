@@ -53,7 +53,7 @@ export default {
       },
 
       method: 'post',
-      url: 'http://localhost:8080/idea/deleteIdeaByIdeaId',
+      url: 'http://localhost:8080/idea/deleteIdea',
 
       data: {
 
@@ -73,7 +73,6 @@ export default {
           if (res.code == 200) {
           
               _this.$message.success("删除成功!");
-              storage.remove("draftList");
               _this.reload();
           
           } else {
@@ -84,7 +83,7 @@ export default {
 
         }).catch(function (err) {
 
-              _this.$message.error("系统错误！");
+            _this.$message.error("系统错误！");
 
         });
 
@@ -95,11 +94,14 @@ export default {
       var _this = this;
 
       this.$router.push({
+          
           path: '/user/createIdea',
+          
           query: {
             ideaId: _this.draft.ideaId,
             action: "post"
           }
+
         })
     
     },
@@ -107,18 +109,6 @@ export default {
     edit() {
       
       var _this = this;
-      
-      // this.$router.push({
-      //   path: "'/ideaInfo",
-      //   query: {
-
-      //     title: _this.draft.title,
-      //     content: _this.draft.content,
-      //     likes: _this.draft.likes,
-      //     visits: _this.draft.visists
-
-      //   }
-      // })
 
       this.$router.push({
         path: '/user/createIdea',
