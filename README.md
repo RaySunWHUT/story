@@ -117,6 +117,10 @@ com.story
 
 
 
+![util1](https://github.com/RaySunWHUT/story/blob/master/assets/util1.jpg)
+
+
+
 ## 架构图
 
 **系统架构图**
@@ -158,6 +162,8 @@ com.story
 | Postman         | API接口调试工具  | https://www.postman.com/                |
 | Typora          | Markdown编辑器   | https://typora.io/                      |
 
+![util2](https://github.com/RaySunWHUT/story/blob/master/assets/util2.jpg)
+
 
 
 ### 开发环境
@@ -167,6 +173,10 @@ com.story
 | JDK   | 1.8    | https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html |
 | Mysql | 5.7.21 | https://www.mysql.com/                                       |
 | Vue   | 2.6.0  | https://cn.vuejs.org/                                        |
+
+
+
+
 
 
 
