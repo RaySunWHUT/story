@@ -117,7 +117,7 @@ com.story
 
 
 
-![util1](https://github.com/RaySunWHUT/story/blob/master/assets/util1.jpg)
+![util1](https://github.com/RaySunWHUT/story/blob/master/assets/utils1.jpg)
 
 
 
@@ -162,7 +162,7 @@ com.story
 | Postman         | API接口调试工具  | https://www.postman.com/                |
 | Typora          | Markdown编辑器   | https://typora.io/                      |
 
-![util2](https://github.com/RaySunWHUT/story/blob/master/assets/util2.jpg)
+![util2](https://github.com/RaySunWHUT/story/blob/master/assets/utils2.jpg)
 
 
 
