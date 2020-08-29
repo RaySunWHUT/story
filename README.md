@@ -151,16 +151,17 @@ com.story
 
 ### 开发工具
 
-| 工具            | 说明             | 官网                                    |
-| --------------- | ---------------- | --------------------------------------- |
-| IntelliJ IDEA   | 后端开发IDE      | https://www.jetbrains.com/idea/download |
-| Navicat Premium | 数据库连接工具   | http://www.formysql.com/xiazai.html     |
-| PowerDesigner   | 数据库设计工具   | http://powerdesigner.de/                |
-| InVision Studio | 原型设计工具     | https://www.invisionapp.com/            |
-| XMind           | 思维导图设计工具 | https://www.xmind.cn/                   |
-| ScreenToGif     | gif录制工具      | https://www.screentogif.com/            |
-| Postman         | API接口调试工具  | https://www.postman.com/                |
-| Typora          | Markdown编辑器   | https://typora.io/                      |
+| 工具               | 说明             | 官网                                    |
+| ------------------ | ---------------- | --------------------------------------- |
+| IntelliJ IDEA      | 后端开发IDE      | https://www.jetbrains.com/idea/download |
+| Visual Studio Code | 前端开发IDE      | https://code.visualstudio.com/          |
+| Navicat Premium    | 数据库连接工具   | http://www.formysql.com/xiazai.html     |
+| PowerDesigner      | 数据库设计工具   | http://powerdesigner.de/                |
+| InVision Studio    | 原型设计工具     | https://www.invisionapp.com/            |
+| XMind              | 思维导图设计工具 | https://www.xmind.cn/                   |
+| ScreenToGif        | gif录制工具      | https://www.screentogif.com/            |
+| Postman            | API接口调试工具  | https://www.postman.com/                |
+| Typora             | Markdown编辑器   | https://typora.io/                      |
 
 ![util2](https://github.com/RaySunWHUT/story/blob/master/assets/utils2.jpg)
 
