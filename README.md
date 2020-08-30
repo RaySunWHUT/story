@@ -185,5 +185,5 @@ com.story
 
 ####     如有任何问题，还请大家提问(issues).
 
-Copyright (c) 2020 Ray Sun WHUT(Wuhan University of Technology)
+Copyright (c) 2020 Ray Sun WHUT(Wuhan University of Technology) -- belongs to 007大战中软国际
 
